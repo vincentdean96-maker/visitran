@@ -16,6 +16,7 @@ import { TodoGuide } from "./TodoGuide";
 import { OnboardingGuide } from "./OnboardingGuide";
 import { OnboardingCompletionPopup } from "./OnboardingCompletionPopup";
 import { useNotificationService } from "../../service/notification-service";
+import { useAxiosPrivate } from "../../service/axios-service";
 import { SpinnerLoader } from "../../widgets/spinner_loader";
 import { useSessionStore } from "../../store/session-store";
 
@@ -71,6 +72,7 @@ const ExistingChat = memo(function ExistingChat({
   onSendButtonClick,
 }) {
   const { getChatMessagesByChatId, updateChatName } = useChatAIService();
+  const axiosPrivate = useAxiosPrivate();
   const isCloud = useSessionStore((state) => state.sessionDetails?.is_cloud);
   const chatContainerRef = useRef(null);
 
@@ -275,7 +277,7 @@ const ExistingChat = memo(function ExistingChat({
       // Only available in cloud mode via the token-usage plugin.
       if (getTokenUsage && isCloud && updatedData.length > 0) {
         const tokenUsagePromises = updatedData.map((msg) =>
-          getTokenUsage(selectedChatId, msg.chat_message_id).catch(() => null)
+          getTokenUsage(axiosPrivate, selectedChatId, msg.chat_message_id).catch(() => null)
         );
         const tokenUsageResults = await Promise.all(tokenUsagePromises);
 
