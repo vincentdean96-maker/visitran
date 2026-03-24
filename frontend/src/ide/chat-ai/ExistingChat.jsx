@@ -19,6 +19,14 @@ import { useNotificationService } from "../../service/notification-service";
 import { SpinnerLoader } from "../../widgets/spinner_loader";
 import { useSessionStore } from "../../store/session-store";
 
+// Cloud-only: fetch per-message token usage (unavailable in OSS — import fails gracefully)
+let getTokenUsage = null;
+try {
+  ({ getTokenUsage } = require("../../plugins/token-management/token-usage"));
+} catch {
+  // OSS: token usage API not available
+}
+
 const ExistingChat = memo(function ExistingChat({
   selectedChatId,
   chatName,
@@ -62,8 +70,7 @@ const ExistingChat = memo(function ExistingChat({
   onSkipCurrentTask,
   onSendButtonClick,
 }) {
-  const { getChatMessagesByChatId, getTokenUsage, updateChatName } =
-    useChatAIService();
+  const { getChatMessagesByChatId, updateChatName } = useChatAIService();
   const isCloud = useSessionStore((state) => state.sessionDetails?.is_cloud);
   const chatContainerRef = useRef(null);
 
@@ -265,8 +272,8 @@ const ExistingChat = memo(function ExistingChat({
       }));
 
       // Fetch token usage for all messages to display in historical conversations.
-      // In OSS mode, token usage data comes through WebSocket — skip the API call.
-      if (isCloud && updatedData.length > 0) {
+      // Only available in cloud mode via the token-usage plugin.
+      if (getTokenUsage && isCloud && updatedData.length > 0) {
         const tokenUsagePromises = updatedData.map((msg) =>
           getTokenUsage(selectedChatId, msg.chat_message_id).catch(() => null)
         );
