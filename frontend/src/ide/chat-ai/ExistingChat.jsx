@@ -277,7 +277,11 @@ const ExistingChat = memo(function ExistingChat({
       // Only available in cloud mode via the token-usage plugin.
       if (getTokenUsage && isCloud && updatedData.length > 0) {
         const tokenUsagePromises = updatedData.map((msg) =>
-          getTokenUsage(axiosPrivate, selectedChatId, msg.chat_message_id).catch(() => null)
+          getTokenUsage(
+            axiosPrivate,
+            selectedChatId,
+            msg.chat_message_id
+          ).catch(() => null)
         );
         const tokenUsageResults = await Promise.all(tokenUsagePromises);
 
