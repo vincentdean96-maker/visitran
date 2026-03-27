@@ -169,6 +169,7 @@ def get_projects_list(request: Request) -> Response:
 
 @api_view([HTTPMethods.POST])
 @handle_http_request
+@handle_permission
 def create_sample_project(request) -> Response:
     load_project_name = request.data.get("template", "jaffleshop_final")
 
@@ -366,6 +367,7 @@ def export_model_content_csv(
 
 @api_view([HTTPMethods.POST])
 @handle_http_request
+@handle_permission
 def set_project_schema(request: Request, project_id: str) -> Response:
     app = ApplicationContext(project_id=project_id)
     schema_name = request.data.get("schema_name")
@@ -679,6 +681,7 @@ def rollback_model_file_content(
 
 @api_view([HTTPMethods.POST])
 @handle_http_request
+@handle_permission
 def save_model_file(request: Request, project_id: str, file_name: str) -> Response:
     # This method is used to save the model file inside the project
     # This API is depreciated and will be removed in next release
@@ -699,6 +702,7 @@ def save_model_file(request: Request, project_id: str, file_name: str) -> Respon
 @api_view([HTTPMethods.POST])
 @clear_cache(patterns=["model_content_{project_id}_*"])
 @handle_http_request
+@handle_permission
 def set_model_config_and_reference(
     request: Request, project_id: str, file_name: str
 ) -> Response:
@@ -765,6 +769,7 @@ def set_model_config_and_reference(
 @api_view([HTTPMethods.POST])
 @clear_cache(patterns=["model_content_{project_id}_*"])
 @handle_http_request
+@handle_permission
 def set_model_transformation(
     request: Request, project_id: str, file_name: str
 ) -> Response:
@@ -782,6 +787,7 @@ def set_model_transformation(
 @api_view([HTTPMethods.DELETE])
 @clear_cache(patterns=["model_content_{project_id}_*"])
 @handle_http_request
+@handle_permission
 def delete_model_transformation(
     request: Request, project_id: str, file_name: str
 ) -> Response:
@@ -803,6 +809,7 @@ def delete_model_transformation(
 @api_view([HTTPMethods.POST])
 @clear_cache(patterns=["model_content_{project_id}_*"])
 @handle_http_request
+@handle_permission
 def set_model_presentation(
     request: Request, project_id: str, file_name: str
 ) -> Response:
@@ -840,6 +847,7 @@ def get_transformation_columns(
 
 @api_view([HTTPMethods.POST])
 @handle_http_request
+@handle_permission
 def validate_model_file(request: Request, project_id: str, file_name: str) -> Response:
     # This method is used to validate the model file inside the project
     request_data = request.data
@@ -852,6 +860,7 @@ def validate_model_file(request: Request, project_id: str, file_name: str) -> Re
 
 @api_view([HTTPMethods.POST])
 @handle_http_request
+@handle_permission
 def write_database_file(request: Request, project_id: str) -> Response:
     # By default, the files will be uploaded in seeds path as of now
     # request_data = request.data
@@ -864,6 +873,7 @@ def write_database_file(request: Request, project_id: str) -> Response:
 
 @api_view([HTTPMethods.POST])
 @handle_http_request
+@handle_permission
 def generate_formula(request: Request, project_id: str, model_name: str) -> Response:
     # Generate Excel Formula based on the User prompt with OpenAi support
     user_prompt = request.data["user_prompt"]
