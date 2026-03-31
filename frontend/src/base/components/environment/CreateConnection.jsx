@@ -164,7 +164,7 @@ const CreateConnection = ({
           const { id, datasource_name } = res.data?.data || {};
           setConnectionId({ id });
           setConnectionDbType(datasource_name);
-          getAllConnection();
+          await getAllConnection();
           setIsModalOpen(false);
           notify({
             type: "success",
@@ -186,8 +186,8 @@ const CreateConnection = ({
             message: "Success",
             description: "Connection updated successfully.",
           });
+          await getAllConnection();
           setIsModalOpen(false);
-          getAllConnection();
         }
       }
     } catch (error) {

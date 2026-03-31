@@ -63,6 +63,19 @@ def _merge_with_stored(incoming: dict[str, Any], stored: dict[str, Any]) -> dict
     return merged
 
 
+def _has_credentials_changed(incoming: dict[str, Any], stored: dict[str, Any]) -> bool:
+    """Return True if any non-derived connection field differs from stored values."""
+    if not stored:
+        return True
+    for key, value in incoming.items():
+        if key.lower() in _DERIVED_FIELDS:
+            continue
+        stored_value = stored.get(key)
+        if stored_value != value:
+            return True
+    return False
+
+
 class ConnectionContext:
 
     def __init__(self):
@@ -143,12 +156,15 @@ class ConnectionContext:
 
         # Merge masked sentinels with stored real values
         stored_model = self.connection_session.get_connection_model(connection_id)
+        stored_details = {}
         if stored_model:
             stored_details = stored_model.decrypted_connection_details
             decrypted_connection_data = _merge_with_stored(decrypted_connection_data, stored_details)
 
-        # Test connection with decrypted data
-        test_connection_data(datasource=datasource, connection_data=decrypted_connection_data)
+        # Only test connection if credentials actually changed
+        credentials_changed = _has_credentials_changed(decrypted_connection_data, stored_details)
+        if credentials_changed:
+            test_connection_data(datasource=datasource, connection_data=decrypted_connection_data)
         _conn_details = get_connection_data(datasource=datasource, connection_data=decrypted_connection_data)
         connection_details["connection_details"] = _conn_details
 
