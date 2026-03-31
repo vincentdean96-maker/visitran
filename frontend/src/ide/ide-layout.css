@@ -476,10 +476,10 @@
   background: transparent;
 }
 .ideExplorer:hover .tree-container::-webkit-scrollbar-thumb {
-  background: #999;
+  background: var(--text-color-3, #999);
 }
 .ideExplorer:hover .tree-container::-webkit-scrollbar-thumb:hover {
-  background: #888;
+  background: var(--text-color-2, #888);
 }
 .check-icon-green {
   color: green;

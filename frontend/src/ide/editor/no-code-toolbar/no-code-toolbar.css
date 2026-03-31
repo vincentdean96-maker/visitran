@@ -20,13 +20,13 @@
 }
 
 /* More button */
-.toolbar-ellipsis-button {
-  display: inline-flex !important;
+.no-code-toolbar-wrapper .toolbar-ellipsis-button {
+  display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 4px;
   height: 32px;
-  padding: 0 12px !important;
+  padding: 0 12px;
   border-radius: 4px;
   flex-shrink: 0;
   transition: background-color 0.2s;

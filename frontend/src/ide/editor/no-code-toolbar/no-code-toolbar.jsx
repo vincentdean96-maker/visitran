@@ -376,19 +376,6 @@ const NoCodeToolbar = memo(function NoCodeToolbar({
         }
       });
 
-      // If hidden items would fit in the space freed by removing the "More" button,
-      // show all items instead
-      if (hidden.length > 0) {
-        const hiddenWidth = hidden.reduce(
-          (sum, item) =>
-            sum + (itemWidthsRef.current.get(item.key) || 0) + ITEM_SPACING,
-          0
-        );
-        if (accumulatedWidth + hiddenWidth <= containerWidth) {
-          hidden.length = 0;
-        }
-      }
-
       // Only update state if hidden items actually changed
       const newHiddenKeys = hidden.map((h) => h.key).join(",");
       const currentHiddenKeys = hiddenItems.map((h) => h.key).join(",");
@@ -484,7 +471,6 @@ const NoCodeToolbar = memo(function NoCodeToolbar({
           ))}
           {hasOverflow && (
             <div className="toolbar-item">
-              <div className="seq_badge_wrapper" />
               <Dropdown
                 menu={dropdownMenu}
                 trigger={["click"]}

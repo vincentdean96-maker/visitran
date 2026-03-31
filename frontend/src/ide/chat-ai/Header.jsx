@@ -3,7 +3,6 @@ import PropTypes from "prop-types";
 import { Button, Space, Tooltip, Typography } from "antd";
 import {
   FileDoneOutlined,
-  HistoryOutlined,
   CloseOutlined,
   MinusOutlined,
   PlusOutlined,
@@ -77,15 +76,6 @@ const Header = memo(function Header({
                 icon={<FileDoneOutlined />}
                 disabled={isPromptRunning}
                 onClick={handleSettingsClick}
-              />
-            </Tooltip>
-            <Tooltip title="History">
-              <Button
-                type="text"
-                size="small"
-                icon={<HistoryOutlined />}
-                disabled={isPromptRunning}
-                onClick={resetSelectedChatId}
               />
             </Tooltip>
             {isOnboardingCompleted && (
