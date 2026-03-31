@@ -1,7 +1,7 @@
 import { memo, useMemo, useRef, useState, useEffect, useCallback } from "react";
 import PropTypes from "prop-types";
 import { Space, Button, Dropdown } from "antd";
-import { MoreOutlined } from "@ant-design/icons";
+import { DownOutlined } from "@ant-design/icons";
 import debounce from "lodash/debounce";
 
 import "./no-code-toolbar.css";
@@ -20,7 +20,7 @@ import { useUserStore } from "../../../store/user-store.js";
 import { DropDuplicates } from "./toolbar-items/drop-duplicates";
 import { Join } from "./toolbar-items/join.jsx";
 
-const ELLIPSIS_BUTTON_WIDTH = 40;
+const ELLIPSIS_BUTTON_WIDTH = 90;
 const DEBOUNCE_DELAY = 300;
 
 const NoCodeToolbar = memo(function NoCodeToolbar({
@@ -359,7 +359,7 @@ const NoCodeToolbar = memo(function NoCodeToolbar({
         return;
       }
 
-      // Reserve space for ellipsis button
+      // Reserve space for the "More" button
       const availableWidth = containerWidth - ELLIPSIS_BUTTON_WIDTH;
 
       let accumulatedWidth = 0;
@@ -375,6 +375,19 @@ const NoCodeToolbar = memo(function NoCodeToolbar({
           hidden.push(item);
         }
       });
+
+      // If hidden items would fit in the space freed by removing the "More" button,
+      // show all items instead
+      if (hidden.length > 0) {
+        const hiddenWidth = hidden.reduce(
+          (sum, item) =>
+            sum + (itemWidthsRef.current.get(item.key) || 0) + ITEM_SPACING,
+          0
+        );
+        if (accumulatedWidth + hiddenWidth <= containerWidth) {
+          hidden.length = 0;
+        }
+      }
 
       // Only update state if hidden items actually changed
       const newHiddenKeys = hidden.map((h) => h.key).join(",");
@@ -458,7 +471,7 @@ const NoCodeToolbar = memo(function NoCodeToolbar({
   return (
     <div className="no-code-toolbar-wrapper">
       <div className="no-code-toolbar-content" ref={containerRef}>
-        <Space size={5}>
+        <Space size={5} align="center">
           {items.map((item) => (
             <div
               key={item.key}
@@ -469,24 +482,31 @@ const NoCodeToolbar = memo(function NoCodeToolbar({
               {item.label}
             </div>
           ))}
+          {hasOverflow && (
+            <div className="toolbar-item">
+              <div className="seq_badge_wrapper" />
+              <Dropdown
+                menu={dropdownMenu}
+                trigger={["click"]}
+                placement="bottomRight"
+                overlayClassName="no-code-toolbar-dropdown"
+              >
+                <Button
+                  type="text"
+                  className="toolbar-ellipsis-button"
+                  aria-label="More transformations"
+                >
+                  More{" "}
+                  <span className="toolbar-more-badge">
+                    {hiddenItems.length}
+                  </span>{" "}
+                  <DownOutlined />
+                </Button>
+              </Dropdown>
+            </div>
+          )}
         </Space>
       </div>
-      {hasOverflow && (
-        <Dropdown
-          menu={dropdownMenu}
-          trigger={["click"]}
-          placement="bottomRight"
-          overlayClassName="no-code-toolbar-dropdown"
-        >
-          <Button
-            type="text"
-            icon={<MoreOutlined />}
-            className="toolbar-ellipsis-button"
-            aria-label="More transformations"
-            title="More transformations"
-          />
-        </Dropdown>
-      )}
     </div>
   );
 });
