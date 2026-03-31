@@ -69,10 +69,10 @@ function NotificationProvider({ children }) {
               errorStatus === 403
                 ? "Access Denied"
                 : errorStatus === 404
-                  ? "Not Found"
-                  : errorStatus === 429
-                    ? "Too Many Requests"
-                    : "Failed";
+                ? "Not Found"
+                : errorStatus === 429
+                ? "Too Many Requests"
+                : "Failed";
             finalDescription = text;
           }
         } else {
