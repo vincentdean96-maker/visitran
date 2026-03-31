@@ -428,8 +428,8 @@ function Filter({
         newFilterCondition.condition.lhs.column?.data_type?.toLowerCase() || "";
       let sanitized = value.trimStart();
       if (dataType === "number") {
-        setShowHint(/[^\d.-]/.test(sanitized));
-        sanitized = sanitized.replace(/[^\d.-]/g, "");
+        setShowHint(/[^\d]/.test(sanitized));
+        sanitized = sanitized.replace(/\D/g, "");
       }
       if (!Array.isArray(newFilterCondition.condition.rhs.value)) {
         newFilterCondition.condition.rhs.value = ["", ""];
@@ -872,7 +872,10 @@ function Filter({
                   type === "join"
                     ? getOperators(type, lhs.column?.data_type).filter(
                         (item) => {
-                          if (joinType === "Cross" && item.value !== "EQ") {
+                          if (
+                            ["Cross", "Full"].includes(joinType) &&
+                            item.value !== "EQ"
+                          ) {
                             return false;
                           }
 
@@ -1020,11 +1023,13 @@ function Filter({
         icon={<PlusOutlined />}
         type="text"
         disabled={
+          // For Full joins, only one condition is allowed (no additional filters)
+          joinType === "Full" ||
           // For joins, only check length limit; for model/source, also check if columns exist
-          isJoinType
+          (isJoinType
             ? filterConditions.length >= 5
             : !columnDetails?.columns?.filter?.length ||
-              filterConditions.length >= 5
+              filterConditions.length >= 5)
         }
       >
         {filterConditions.length ? "Add another filter" : "Add a filter"}
