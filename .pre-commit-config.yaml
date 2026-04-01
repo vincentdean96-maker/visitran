@@ -2,6 +2,14 @@
 # See https://pre-commit.com for more information
 # See https://pre-commit.com/hooks.html for more hooks
 
+ci:
+  skip:
+    - mypy # Uses language: system, not available in pre-commit.ci sandbox
+    - protolint-docker # Needs Docker, not available in pre-commit.ci
+    - hadolint-docker # Needs Docker, not available in pre-commit.ci
+  autofix_prs: true
+  autoupdate_schedule: monthly
+
 # Force all unspecified python hooks to run python 3.10
 default_language_version:
   python: python3.10
