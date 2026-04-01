@@ -211,13 +211,13 @@ def get_supported_models(request: Request, project_id: str, file_name: str) -> R
 @api_view([HTTPMethods.POST])
 @handle_http_request
 @handle_permission
-def generate_formula(request: Request, project_id: str, file_name: str) -> Response:
+def generate_formula(request: Request, project_id: str, model_name: str) -> Response:
     # Generate Excel Formula based on the User prompt with OpenAi support
     user_prompt = request.data["user_prompt"]
     app = FormulaContext(project_id=project_id)
 
     # Get schema details and construct the prompt
-    schema_details = app.get_schema_details(file_name)
+    schema_details = app.get_schema_details(model_name)
     constructed_prompt = app.construct_prompt(user_prompt, schema_details)
 
     # Generate the formula

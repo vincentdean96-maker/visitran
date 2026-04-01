@@ -21,6 +21,6 @@ urlpatterns = [
     path("<str:file_name>/set-presentation", set_model_presentation, name="set-no-code-model-presentation"),
     path("<str:file_name>/columns", get_transformation_columns, name="get-transformation-columns"),
     path("<str:file_name>/supported_references", get_supported_models, name="get-supported-reference-models"),
-    path("<str:file_name>/generate_formula", generate_formula, name="generate-formula"),
+    path("<str:model_name>/generate_formula", generate_formula, name="generate-formula"),
     path("<str:file_name>", save_model_file, name="save-no-code-model-file"),
 ]
