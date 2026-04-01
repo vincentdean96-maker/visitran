@@ -19,8 +19,11 @@ urlpatterns = [
     path("token", include("backend.core.routers.api_tokens.urls")),
     path("connection", include("backend.core.routers.connection.urls")),
     path("environment", include("backend.core.routers.environment.urls")),
-    path("project", include("backend.core.routers.transformation.urls")),
     path("project", include("backend.core.routers.projects.urls")),
+    path(
+        "project/<str:project_id>/no_code_model/",
+        include("backend.core.routers.transformation.urls"),
+    ),
     path("onboarding/", include("backend.core.routers.onboarding.urls")),
     path(
         "project/<str:project_id>/connection",
