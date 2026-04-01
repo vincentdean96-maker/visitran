@@ -35,9 +35,9 @@ def save_model_file(request: Request, project_id: str, file_name: str) -> Respon
 
 
 @api_view([HTTPMethods.POST])
-@clear_cache(patterns=["model_content_{project_id}_*"])
 @handle_http_request
 @handle_permission
+@clear_cache(patterns=["model_content_{project_id}_*"])
 def set_model_config_and_reference(
     request: Request, project_id: str, file_name: str
 ) -> Response:
@@ -102,9 +102,9 @@ def set_model_config_and_reference(
 
 
 @api_view([HTTPMethods.POST])
-@clear_cache(patterns=["model_content_{project_id}_*"])
 @handle_http_request
 @handle_permission
+@clear_cache(patterns=["model_content_{project_id}_*"])
 def set_model_transformation(
     request: Request, project_id: str, file_name: str
 ) -> Response:
@@ -120,9 +120,9 @@ def set_model_transformation(
 
 
 @api_view([HTTPMethods.DELETE])
-@clear_cache(patterns=["model_content_{project_id}_*"])
 @handle_http_request
 @handle_permission
+@clear_cache(patterns=["model_content_{project_id}_*"])
 def delete_model_transformation(
     request: Request, project_id: str, file_name: str
 ) -> Response:
@@ -142,9 +142,9 @@ def delete_model_transformation(
 
 
 @api_view([HTTPMethods.POST])
-@clear_cache(patterns=["model_content_{project_id}_*"])
 @handle_http_request
 @handle_permission
+@clear_cache(patterns=["model_content_{project_id}_*"])
 def set_model_presentation(
     request: Request, project_id: str, file_name: str
 ) -> Response:
