@@ -369,6 +369,17 @@ function Filter({
             inAndNotIn
               ? setAndSanitizeValue(/[^\d,.-]/, /[^\d,.-]/g)
               : setAndSanitizeValue(/[^\d.-]/, /[^\d.-]/g);
+            // Sanitize each numeric segment to prevent malformed values
+            // like "3.1.4" (multiple dots) or "--3" (multiple minus signs)
+            const sanitizeNumericSegment = (s) => {
+              const sign = s.startsWith("-") ? "-" : "";
+              const rest = (sign ? s.slice(1) : s).replace(/-/g, "");
+              const parts = rest.split(".");
+              return sign + parts[0] + (parts.length > 1 ? "." + parts.slice(1).join("") : "");
+            };
+            value = inAndNotIn
+              ? value.split(",").map(sanitizeNumericSegment).join(",")
+              : sanitizeNumericSegment(value);
           }
           newFilterCondition["condition"][conditionKey][key] = [value];
           newFilterCondition["condition"][conditionKey]["type"] = typed;
