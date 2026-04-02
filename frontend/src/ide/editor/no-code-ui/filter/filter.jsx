@@ -375,7 +375,11 @@ function Filter({
               const sign = s.startsWith("-") ? "-" : "";
               const rest = (sign ? s.slice(1) : s).replace(/-/g, "");
               const parts = rest.split(".");
-              return sign + parts[0] + (parts.length > 1 ? "." + parts.slice(1).join("") : "");
+              return (
+                sign +
+                parts[0] +
+                (parts.length > 1 ? "." + parts.slice(1).join("") : "")
+              );
             };
             value = inAndNotIn
               ? value.split(",").map(sanitizeNumericSegment).join(",")
